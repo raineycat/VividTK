@@ -1,8 +1,10 @@
-﻿using System.IO;
+﻿using System.ComponentModel;
+using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Input;
 using Microsoft.Win32;
 using VividTK.VSFormatLib;
@@ -17,6 +19,9 @@ public partial class MainWindow : Window
 {
     public VSDReader? OpenFile { get; private set; }
     public string? OpenFilePath { get; private set; }
+    
+    private GridViewColumnHeader? _listViewSortCol;
+    private SortAdorner? _listViewSortAdorner;
     
     public MainWindow()
     {
@@ -190,5 +195,30 @@ public partial class MainWindow : Window
         {
             MessageBox.Show(this, $"Failed to read file!\n\n{ex}");
         }
+    }
+    
+    private void ColumnHeaderClickHandler(object sender, RoutedEventArgs e)
+    {
+        var column = (sender as GridViewColumnHeader);
+        if(column == null) return;
+        
+        var sortBy = column.Tag.ToString();
+        if(sortBy == null) return;
+        
+        if(_listViewSortCol != null)
+        {
+            if(_listViewSortAdorner != null)
+                AdornerLayer.GetAdornerLayer(_listViewSortCol)?.Remove(_listViewSortAdorner);
+            SongList.Items.SortDescriptions.Clear();
+        }
+
+        var newDir = ListSortDirection.Ascending;
+        if(_listViewSortCol == column && _listViewSortAdorner != null && _listViewSortAdorner.Direction == newDir)
+            newDir = ListSortDirection.Descending;
+
+        _listViewSortCol = column;
+        _listViewSortAdorner = new SortAdorner(_listViewSortCol, newDir);
+        AdornerLayer.GetAdornerLayer(_listViewSortCol)?.Add(_listViewSortAdorner);
+        SongList.Items.SortDescriptions.Add(new SortDescription(sortBy, newDir));
     }
 }
