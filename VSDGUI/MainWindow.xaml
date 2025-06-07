@@ -43,7 +43,7 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             
-            <ListBox Grid.Column="0" x:Name="SongList" SelectionChanged="SongList_OnSelectionChanged">
+            <ListBox Grid.Column="0" x:Name="SongList" SelectionMode="Extended" SelectionChanged="SongList_OnSelectionChanged">
                 <ListBox.ItemTemplate>
                     <DataTemplate DataType="{x:Type vsd:SongInfo}">
                         <TextBlock Text="{Binding Name}" />
