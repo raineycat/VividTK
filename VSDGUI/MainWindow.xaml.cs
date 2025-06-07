@@ -60,7 +60,7 @@ public partial class MainWindow : Window
 
     private void SongList_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-        SelectionList.ItemsSource = e.AddedItems;
+        SelectionList.ItemsSource = SongList.SelectedItems;
     }
 
     private void SaveCommandHandler(object sender, ExecutedRoutedEventArgs e)
