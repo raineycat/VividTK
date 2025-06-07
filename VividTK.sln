@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DumpVSD", "DumpVSD\DumpVSD.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DumpChart", "DumpChart\DumpChart.csproj", "{2C58DEC0-BFF0-4750-A4EB-CE24B2BEAB6A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VSDGUI", "VSDGUI\VSDGUI.csproj", "{F684DED9-85FC-4BD0-981B-BAFD39FC24D0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{2C58DEC0-BFF0-4750-A4EB-CE24B2BEAB6A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2C58DEC0-BFF0-4750-A4EB-CE24B2BEAB6A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2C58DEC0-BFF0-4750-A4EB-CE24B2BEAB6A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F684DED9-85FC-4BD0-981B-BAFD39FC24D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F684DED9-85FC-4BD0-981B-BAFD39FC24D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F684DED9-85FC-4BD0-981B-BAFD39FC24D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F684DED9-85FC-4BD0-981B-BAFD39FC24D0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

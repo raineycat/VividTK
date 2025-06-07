@@ -40,6 +40,30 @@
 
                 _ => SongFieldType.Invalid
             };
+        
+        public static byte FieldTypeToByte(SongFieldType type) =>
+            type switch
+            {
+                // 1 => SongFieldType.F32,
+                // 2 => SongFieldType.F32,
+                // 3 => SongFieldType.U8,
+                // 4 => SongFieldType.F32,
+                // 5 => SongFieldType.F32,
+                // 6 => SongFieldType.U8,
+                // 7 => SongFieldType.S8,
+
+                SongFieldType.U8 => 176,
+                SongFieldType.S8 => 177,
+                SongFieldType.U32 => 178,
+                SongFieldType.S32 => 179,
+
+                SongFieldType.F16 => 181,
+                SongFieldType.F32 => 182,
+                SongFieldType.Bool => 183,
+                SongFieldType.String => 184,
+
+                _ => 255
+            };
 
         public static object ReadFrom(this SongFieldType type, BinaryReader r) =>
             type switch

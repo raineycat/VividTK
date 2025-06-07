@@ -1,0 +1,152 @@
+﻿<Window x:Class="VSDGUI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:VSDGUI"
+        xmlns:vsd="clr-namespace:VividTK.VSFormatLib.VSD;assembly=VividTK.VSFormatLib"
+        mc:Ignorable="d"
+        Title="VSD Editor" Width="800" Height="450">
+    <Window.Resources>
+        <local:HiddenBooleanConverter x:Key="HiddenBooleanConverter" />
+    </Window.Resources>
+    
+    <Window.CommandBindings>
+        <CommandBinding Command="ApplicationCommands.Open" Executed="OpenCommandHandler" />
+        <CommandBinding Command="ApplicationCommands.Save" Executed="SaveCommandHandler" />
+        <CommandBinding Command="ApplicationCommands.SaveAs" Executed="SaveAsCommandHandler" />
+        <CommandBinding Command="ApplicationCommands.Print" Executed="ExportCommandHandler" />
+        
+        <CommandBinding Command="ApplicationCommands.Help" Executed="HelpCommandHandler" />
+        <CommandBinding Command="ApplicationCommands.Close" Executed="CloseCommandHandler" />
+    </Window.CommandBindings>
+    
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="_File">
+                <MenuItem Header="_Open VSD..." Command="Open" />
+                <MenuItem Header="_Save..." Command="Save" />
+                <MenuItem Header="Save _As..." Command="SaveAs" />
+                <MenuItem Header="Export _JSON..." Command="Print" />
+                
+                <Separator />
+                
+                <MenuItem Header="_About" Command="Help" />
+                <MenuItem Header="_Quit" Command="Close" />
+            </MenuItem>
+        </Menu>
+        
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="300" />
+                <ColumnDefinition Width="5" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            
+            <ListBox Grid.Column="0" x:Name="SongList" SelectionChanged="SongList_OnSelectionChanged">
+                <ListBox.ItemTemplate>
+                    <DataTemplate DataType="{x:Type vsd:SongInfo}">
+                        <TextBlock Text="{Binding Name}" />
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            
+            <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" />
+            
+            <ListView Grid.Column="2" x:Name="SelectionList" HorizontalContentAlignment="Stretch">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="Focusable" Value="false"/>
+                    </Style>
+                </ListView.ItemContainerStyle>
+                
+                <ListView.ItemTemplate>
+                    <DataTemplate DataType="{x:Type vsd:SongInfo}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="40" />
+                                <RowDefinition Height="20" />
+                                <RowDefinition Height="20" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            
+                            <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center">
+                                <TextBox Text="{Binding FormattedName}" FontSize="20" />
+                                <TextBlock Text=" (#" FontSize="20"/>
+                                <TextBlock Text="{Binding SongId}" FontSize="20"/>
+                                <TextBlock Text=": " FontSize="20"/>
+                                <TextBlock Text="{Binding ChartId}" FontSize="20"/>
+                                <TextBlock Text=")" FontSize="20"/>
+                                <TextBlock Text="  -  " FontSize="20" />
+                                <TextBox Text="{Binding Artist}" FontSize="20" />
+                            </StackPanel>
+                            
+                            <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
+                                <TextBox Text="{Binding Name}" FontSize="15" />
+                                
+                                <TextBlock Text="  /  " FontSize="15" />
+                                
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBox Text="{Binding BpmDisplay}" FontSize="15" />
+                                    <TextBlock Text=" BPM" FontSize="15" />
+                                </StackPanel>
+                                
+                                <TextBlock Text="  /  " FontSize="15" />
+                                
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="v" FontSize="15" />
+                                    <TextBox Text="{Binding Version}" FontSize="15" />
+                                </StackPanel>
+                                
+                                <StackPanel Orientation="Horizontal" Visibility="{Binding HasEncore, Converter={StaticResource HiddenBooleanConverter}}">
+                                    <TextBlock Text="  /  " FontSize="15" />
+                                    <TextBlock Text="+ENCORE" FontSize="15"  />
+                                </StackPanel>
+                                
+                                <StackPanel Orientation="Horizontal" Visibility="{Binding IsOriginal, Converter={StaticResource HiddenBooleanConverter}}">
+                                    <TextBlock Text="  /  " FontSize="15" />
+                                    <TextBlock Text="OST" FontSize="15"  />
+                                </StackPanel>
+                                
+                                <!--<StackPanel Orientation="Horizontal" Visibility="{Binding IsPublished, Converter={StaticResource HiddenBooleanConverter}}">
+                                    <TextBlock Text="  /  " FontSize="15" />
+                                    <TextBlock Text="RELEASED" FontSize="15"  />
+                                </StackPanel>-->
+                            </StackPanel>
+                            
+                            <StackPanel Grid.Row="3" Orientation="Vertical">
+                                <TextBlock Text="Charts:" FontSize="15" HorizontalAlignment="Center" />
+                                <ListView ItemsSource="{Binding Charts}">
+                                    <ListView.ItemContainerStyle>
+                                        <Style TargetType="ListViewItem">
+                                            <Setter Property="Focusable" Value="false"/>
+                                        </Style>
+                                    </ListView.ItemContainerStyle>
+                                    
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate DataType="{x:Type vsd:ChartInfo}">
+                                            <StackPanel Orientation="Vertical">
+                                                <!--<TextBlock Text="{Binding DifficultyDisplay}" />-->
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="Chart #" />
+                                                    <TextBlock Text="{Binding Index}" />
+                                                    <TextBlock Text=" (" />
+                                                    <TextBox Text="{Binding DifficultyConstant}" />
+                                                    <TextBlock Text=")" />
+                                                </StackPanel>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="charted by " />
+                                                    <TextBox Text="{Binding NoteDesigner}" />
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                </ListView>
+                            </StackPanel>
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Grid>
+    </DockPanel>
+</Window>

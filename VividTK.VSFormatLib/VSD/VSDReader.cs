@@ -44,7 +44,9 @@ public class VSDReader
     private SongInfo ReadSong()
     {
         var song = new SongInfo(0);
-        var charts = new List<object>();
+        var charts = new List<ChartInfo>();
+        //var chartType = ChartType.OPENING;
+        var chartIndex = 1;
 
         ObjectType ot;
         do
@@ -53,11 +55,16 @@ public class VSDReader
             switch (ot)
             {
                 case ObjectType.CHART_INFO:
-                    var chart = new ChartInfo();
-                    chart.DifficultyDisplay = _reader.ReadTerminatedString();
-                    chart.DifficultyConstant = _reader.ReadSingle();
-                    chart.NoteDesigner = _reader.ReadTerminatedString();
-                    charts.Add(chart);
+                    charts.Add(new ChartInfo
+                    {
+                        //Type = chartType,
+                        Index = chartIndex,
+                        DifficultyDisplay = _reader.ReadTerminatedString(),
+                        DifficultyConstant = _reader.ReadSingle(),
+                        NoteDesigner = _reader.ReadTerminatedString()
+                    });
+                    //chartType = (ChartType)((int)chartType + 1);
+                    chartIndex++;
                     break;
 
                 case ObjectType.SONG_FIELD:
@@ -87,7 +94,7 @@ public class VSDReader
                             break;
 
                         case SongField.BPMDisplay:
-                            song.BPMDisplay = _reader.ReadTerminatedString();
+                            song.BpmDisplay = _reader.ReadTerminatedString();
                             break;
 
                         case SongField.Version:
@@ -111,17 +118,10 @@ public class VSDReader
                             break;
                     }
                     break;
-
-                default:
-                    break;
             }
         } while (ot != ObjectType.DATA_END);
 
-        foreach (var c in charts)
-        {
-
-        }
-
+        song.Charts = charts.Where(c => c.DifficultyConstant > 0).ToList();
         return song;
     }
 }

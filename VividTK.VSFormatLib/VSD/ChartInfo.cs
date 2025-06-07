@@ -2,8 +2,10 @@
 {
     public class ChartInfo
     {
-        public string DifficultyDisplay = "";
-        public float DifficultyConstant = 0.0f;
-        public string NoteDesigner = "";
+        // public ChartType Type { get; set; } = ChartType.OPENING;
+        public int Index { get; set; } = 0;
+        public string DifficultyDisplay { get; set; } = "";
+        public float DifficultyConstant { get; set; } = 0.0f;
+        public string NoteDesigner { get; set; } = "";
     }
 }

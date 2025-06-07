@@ -184,7 +184,7 @@ public class ChartReader
         {
             B = _reader.ReadSingle(),
             E = _reader.ReadSingle(),
-            F = _reader.ReadTerminatedString()
+            FunctionName = _reader.ReadTerminatedString()
         };
         
         return data;
