@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:VSDGUI"
         xmlns:vsd="clr-namespace:VividTK.VSFormatLib.VSD;assembly=VividTK.VSFormatLib"
         mc:Ignorable="d"
+        AllowDrop="True" Drop="DropFileHandler"
         Title="VSD Editor" Width="800" Height="450">
     <Window.Resources>
         <local:HiddenBooleanConverter x:Key="HiddenBooleanConverter" />

@@ -1,16 +1,9 @@
 ﻿using System.IO;
-using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Microsoft.Win32;
 using VividTK.VSFormatLib;
 using VividTK.VSFormatLib.VSD;
@@ -173,6 +166,29 @@ public partial class MainWindow : Window
             == MessageBoxResult.Yes)
         {
             Environment.Exit(0);   
+        }
+    }
+
+    private void DropFileHandler(object sender, DragEventArgs e)
+    {
+        if (!e.Data.GetDataPresent(DataFormats.FileDrop))
+        {
+            return;
+        }
+        
+        try
+        {
+            var filePaths = e.Data.GetData(DataFormats.FileDrop) as string[];
+            if(filePaths == null || filePaths.Length < 1) return;
+            
+            OpenFile = VSFile.ReadVSD(filePaths[0]);
+            OpenFilePath = filePaths[0];
+            SongList.ItemsSource = OpenFile.Songs;
+            // MessageBox.Show(this, "Loaded!");
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(this, $"Failed to read file!\n\n{ex}");
         }
     }
 }
