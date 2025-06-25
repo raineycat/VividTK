@@ -12,7 +12,7 @@ This project includes:
 
 #### DumpVSD/DumpChart
 - Command line utilities to dump the eponymous binary files into JSON files
-- Examples of the output of these tools are provided in the [https://github.com/raineycat/VividTK/tree/main/SampleExport](`/SampleExport`) directory in this repo
+- Examples of the output of these tools are provided in the [`/SampleExport`](https://github.com/raineycat/VividTK/tree/main/SampleExport) directory in this repo
 - These probably won't be useful for most users, but might be nice if you're doing something like parsing songs or charts with automated tools
 
 #### VSDGUI
