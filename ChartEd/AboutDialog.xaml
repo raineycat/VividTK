@@ -1,0 +1,42 @@
+﻿<Window x:Class="ChartEd.AboutDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        mc:Ignorable="d"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        Title="About..." Height="200" Width="300">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="10" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="25" />
+            <RowDefinition Height="10" />
+        </Grid.RowDefinitions>
+        
+        <StackPanel Grid.Row="1" Orientation="Vertical" HorizontalAlignment="Center">
+            <StackPanel.Resources>
+                <Style TargetType="{x:Type TextBlock}">
+                    <Setter Property="HorizontalAlignment" Value="Center" />
+                </Style>
+            </StackPanel.Resources>
+            
+            <TextBlock Text="vivid/stasis chart editor" FontSize="20" />
+            <TextBlock FontSize="15">
+                <Hyperlink 
+                    NavigateUri="https://github.com/raineycat/VividTK" 
+                    RequestNavigate="HandleOpenLink">
+                    https://github.com/raineycat/VividTK
+                </Hyperlink>
+            </TextBlock>
+            
+            <Separator Margin="0,15" />
+            <TextBlock Text="Made by Raine and its spite!" />
+        </StackPanel>
+        
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">
+            <Button Click="HandleCloseDialog" Content="OK" Width="60" />
+        </StackPanel>
+    </Grid>
+</Window>

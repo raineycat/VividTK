@@ -76,10 +76,10 @@ public class ChartReader
             switch (flag)
             {
                 case ChartDataType.NoteEntryType:
-                    note.Type = _reader.ReadByte();
+                    note.Type = (NoteType)_reader.ReadByte();
                     break;
                 case ChartDataType.NoteEntryLane:
-                    note.Lane = _reader.ReadByte();
+                    note.Lane = (LaneType)_reader.ReadByte();
                     break;
                 case ChartDataType.NoteEntryTime:
                     note.Time = _reader.ReadSingle();
@@ -89,6 +89,23 @@ public class ChartReader
                     break;
             }
         } while (flag != ChartDataType.NoteEntryEnd);
+
+
+        switch (note.Type)
+        {
+            case NoteType.Bumper:
+                note.Lane = note.Lane switch
+                {
+                    LaneType.Lane1 => LaneType.LeftBumper,
+                    LaneType.Lane2 => LaneType.MiddleBumper,
+                    _ => LaneType.RightBumper
+                };
+                break;
+            
+            case NoteType.BumperMine:
+                note.Lane = note.Lane == LaneType.Lane1 ? LaneType.LeftBumper : LaneType.RightBumper;
+                break;
+        }
         
         Notes.Add(note);
     }
@@ -165,13 +182,13 @@ public class ChartReader
     {
         var data = new ModData
         {
-            B = _reader.ReadSingle(),
-            D = _reader.ReadSingle(),
+            StartOffset = _reader.ReadSingle(),
+            Duration = _reader.ReadSingle(),
             Ease = (Easing)_reader.ReadByte(),
             V1 = _reader.ReadSingle(),
             V2 = _reader.ReadSingle(),
             Type = (ModType)_reader.ReadByte(),
-            P = _reader.ReadChar()
+            ProxyIndex = _reader.ReadChar()
         };
         
         data.Weight = ModTypeHelper.GetModWeight(data.Type);

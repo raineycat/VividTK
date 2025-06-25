@@ -26,6 +26,7 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
+        DataContext = this;
     }
 
     public void OpenCommandHandler(object sender, ExecutedRoutedEventArgs ev)

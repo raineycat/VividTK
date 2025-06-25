@@ -1,0 +1,83 @@
+﻿<Window x:Class="ChartEd.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ChartEd"
+        xmlns:skia="clr-namespace:SkiaSharp.Views.WPF;assembly=SkiaSharp.Views.WPF"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance local:MainWindow}"
+        Title="Chart Editor" Height="800" Width="600">
+    <Window.Resources>
+        <local:HiddenBooleanConverter x:Key="HiddenBooleanConverter" />
+    </Window.Resources>
+    
+    <Window.CommandBindings>
+        <CommandBinding Command="ApplicationCommands.Open" Executed="OpenCommandHandler" />
+        
+        <CommandBinding Command="ApplicationCommands.Help" Executed="HelpCommandHandler" />
+        <CommandBinding Command="ApplicationCommands.Close" Executed="CloseCommandHandler" />
+    </Window.CommandBindings>
+    
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="_File">
+                <MenuItem Header="_Open chart..." Command="Open" />
+                
+                <Separator />
+                
+                <MenuItem Header="_About" Command="Help" />
+                <MenuItem Header="_Quit" Command="Close" />
+            </MenuItem>
+        </Menu>
+        
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="5" />
+                <ColumnDefinition Width="300" />
+            </Grid.ColumnDefinitions>
+            
+            <StackPanel Grid.Column="0">
+                <Label>Info:</Label>
+                <StackPanel Orientation="Horizontal">
+                    <Label>Current position: </Label>
+                    <TextBlock x:Name="PositionDisplay" Text="0.000" VerticalAlignment="Center" FontWeight="Bold" />
+                    <Label>s</Label>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Label>Notes: </Label>
+                    <TextBlock x:Name="NoteCount" Text="0" VerticalAlignment="Center" FontWeight="Bold" />
+                </StackPanel>
+                
+                <Label>Controls:</Label>
+                <StackPanel Orientation="Horizontal">
+                    <Button Click="HandleScrollUpButtonClick" Margin="0,0,10,0">Scroll up</Button>
+                    <Button Click="HandleScrollResetButtonClick" Margin="0,0,10,0">Reset</Button>
+                    <Button Click="HandleScrollDownButtonClick">Scroll down</Button>
+                </StackPanel>
+                
+                <Label>Scale:</Label>
+                <Slider ValueChanged="HandleScaleSliderChanged" Padding="10,0" Minimum="0.01" Maximum="2" Value="0.5" Ticks="0.05,0.1,0.5,1,1.5,2" />
+                
+                <Label>Markers:</Label>
+                <CheckBox x:Name="ShowMarkersBox" Checked="HandleMarkerSettingsChanged" IsChecked="True">Show?</CheckBox>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="75" />
+                    </Grid.ColumnDefinitions>
+                    
+                    <Slider Grid.Column="0" x:Name="MarkerSizeSlider" ValueChanged="HandleMarkerSettingsChanged" 
+                            Minimum="10" Maximum="20" Value="16" />
+                    <TextBlock Grid.Column="1" VerticalAlignment="Center">Font size</TextBlock>
+                </Grid>
+            </StackPanel>
+            
+            <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" />
+            <skia:SKElement Grid.Column="2" x:Name="Timeline" 
+                            PaintSurface="HandleTimelinePaint"
+                            MouseWheel="HandleTimelineMouseWheel" />
+        </Grid>
+    </DockPanel>
+</Window>

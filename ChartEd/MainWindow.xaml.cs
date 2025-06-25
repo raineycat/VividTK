@@ -1,0 +1,249 @@
+﻿using System.Diagnostics;
+using System.Windows;
+using System.Windows.Input;
+using Microsoft.Win32;
+using SkiaSharp;
+using SkiaSharp.Views.Desktop;
+using VividTK.VSFormatLib;
+using VividTK.VSFormatLib.Chart;
+
+namespace ChartEd;
+
+/// <summary>
+/// Interaction logic for MainWindow.xaml
+/// </summary>
+public partial class MainWindow
+{
+    private ChartReader? _chart;
+    private float _timelineScroll;
+    private float _timelineScale = 0.5f;
+        
+    public MainWindow()
+    {
+        InitializeComponent();
+    }
+    
+    public void OpenCommandHandler(object sender, ExecutedRoutedEventArgs ev)
+    {
+        var dialog = new OpenFileDialog
+        {
+            Title = "Open a chart file...",
+            Filter = "VSB Files|*.vsb|All files|*.*",
+            CheckFileExists = true,
+            FileName = "OPENING.vsb"
+        };
+
+        if (!(dialog.ShowDialog(this) ?? false))
+        {
+            return;
+        }
+
+        try
+        {
+            _chart = VSFile.ReadSingleChart(dialog.FileName);
+            // Timeline.Height = GetMaxChartHeight(_chart, 0.05f, 10);
+            Timeline.InvalidateVisual();
+            // MessageBox.Show(this, "Loaded!");
+        }
+        catch (Exception e)
+        {
+            MessageBox.Show(this, $"Failed to read chart!\n\n{e}");
+        }
+    }
+    
+    private void HelpCommandHandler(object sender, ExecutedRoutedEventArgs e)
+    {
+        new AboutDialog
+        {
+            Owner = this
+        }.ShowDialog();
+    }
+
+    private void CloseCommandHandler(object sender, ExecutedRoutedEventArgs e)
+    {
+        if (MessageBox.Show(
+                this, 
+                "Are you sure you want to exit?", 
+                "Chart Editor",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Warning) 
+            == MessageBoxResult.Yes)
+        {
+            Environment.Exit(0);   
+        }
+    }
+
+    private void HandleTimelinePaint(object? sender, SKPaintSurfaceEventArgs args)
+    {
+        SKImageInfo info = args.Info;
+        SKSurface surface = args.Surface;
+        SKCanvas canvas = surface.Canvas;
+        
+        canvas.Clear(SKColors.Black);
+
+        if (_chart == null)
+        {
+            var font = new SKFont(SKTypeface.FromFamilyName("Arial"));
+            var paint = new SKPaint
+            {
+                Color = SKColors.White
+            };
+
+            const string str = "No chart loaded!";
+            var textWidth = font.MeasureText(str, paint);
+            font.Size = 0.9f * info.Width * font.Size / textWidth;
+            canvas.DrawText(str, 0, info.Height / 2.0f, font, paint);
+            return;
+        }
+
+        NoteCount.Text = _chart.Notes.Count.ToString();
+            
+        const int laneCount = 4;
+        var laneWidth = (info.Width - 10) / laneCount;
+        
+        float GetLanePos(LaneType t)
+        {
+            return t switch
+            {
+                LaneType.Lane1 or LaneType.Lane2 or LaneType.Lane3 or LaneType.Lane4 => ((byte)t * laneWidth) + 5,
+                LaneType.LeftBumper or LaneType.MiddleBumper or LaneType.RightBumper => (((byte)t - 4) * laneWidth) + 5,
+                _ => -100
+            };
+        }
+
+        const float noteHeight = 20.0f;
+
+        var markerPaint = new SKPaint
+        {
+            Color = ShowMarkersBox.IsChecked.GetValueOrDefault() ? SKColors.White : SKColor.Empty,
+            StrokeWidth = 10.0f,
+        };
+        
+        // start marker
+        var startY = 50 - _timelineScroll;
+        canvas.DrawLine(0, startY, (float)Timeline.Width, startY, markerPaint);
+
+        var chipPaint = new SKPaint
+        {
+            Color = SKColors.Aqua,
+            Style = SKPaintStyle.StrokeAndFill,
+            StrokeCap = SKStrokeCap.Round
+        };
+        
+        var errorPaint = new SKPaint
+        {
+            Color = SKColors.Green,
+            Style = SKPaintStyle.StrokeAndFill,
+            StrokeCap = SKStrokeCap.Round
+        };
+
+        var leftBumperPaint = new SKPaint
+        {
+            Color = SKColors.Blue,
+            Style = SKPaintStyle.StrokeAndFill,
+            StrokeCap = SKStrokeCap.Round
+        };
+        
+        var rightBumperPaint = new SKPaint
+        {
+            Color = SKColors.Red,
+            Style = SKPaintStyle.StrokeAndFill,
+            StrokeCap = SKStrokeCap.Round
+        };
+        
+        var minePaint = new SKPaint
+        {
+            Color = SKColors.DarkGray,
+            Style = SKPaintStyle.StrokeAndFill,
+            StrokeCap = SKStrokeCap.Round
+        };
+        
+        var markerFont = new SKFont(SKTypeface.FromFamilyName("Arial"));
+        markerFont.Size = (float)MarkerSizeSlider.Value;
+        
+        foreach (var note in _chart.Notes)
+        {
+            var xPos = GetLanePos(note.Lane);
+            var yPos = 50 + note.Time * _timelineScale;
+
+            if ((yPos < _timelineScroll || yPos > _timelineScroll + Timeline.Height) && note.Type != NoteType.Hold)
+            {
+                continue;
+            }
+
+            switch (note.Type)
+            {
+                case NoteType.Chip:
+                    canvas.DrawRect(xPos + 2.5f, yPos - _timelineScroll, laneWidth - 5, noteHeight, chipPaint);
+                    break;
+                
+                case NoteType.Mine:
+                    canvas.DrawRect(xPos + 2.5f, yPos - _timelineScroll, laneWidth - 5, noteHeight, minePaint);
+                    break;
+                
+                case NoteType.Bumper:
+                    canvas.DrawRect(xPos + 2.5f, yPos - _timelineScroll, laneWidth * 2 - 5, noteHeight, 
+                        note.Lane == LaneType.LeftBumper ? leftBumperPaint : rightBumperPaint);
+                    break;
+                
+                case NoteType.Hold:
+                    var holdTime = note.HoldEndMillis - note.Time;
+                    canvas.DrawRect(xPos + 2.5f, yPos - _timelineScroll, laneWidth - 5, noteHeight + holdTime * _timelineScale, chipPaint);
+                    break;
+                
+                case NoteType.TempoChange:
+                    var newTempo = note.NewTempo;
+                    var text = newTempo != null ? $"TEMPO TO: {newTempo}bpm" : "nullbpm";
+                    
+                    canvas.DrawLine(0, yPos - _timelineScroll - 20, 
+                        (float)Timeline.Width, yPos - _timelineScroll - 20, markerPaint);
+                    canvas.DrawText(text, 10, yPos - _timelineScroll, markerFont, markerPaint);
+                    break;
+                
+                default:
+                    Debug.WriteLine($"Error note: {note.Type} @ {note.Time}/{note.Lane}");
+                    canvas.DrawRect(xPos + 2.5f, yPos - _timelineScroll, laneWidth - 5, noteHeight, errorPaint);
+                    break;
+            }
+        }
+    }
+
+    private void HandleTimelineMouseWheel(object sender, MouseWheelEventArgs e)
+    {
+        ScrollBy(-e.Delta);
+    }
+
+    private void HandleScrollUpButtonClick(object sender, RoutedEventArgs e)
+    {
+        ScrollBy(-50.0f);
+    }
+    
+    private void HandleScrollResetButtonClick(object sender, RoutedEventArgs e)
+    {
+        ScrollBy(-_timelineScroll);
+    }
+    
+    private void HandleScrollDownButtonClick(object sender, RoutedEventArgs e)
+    {
+        ScrollBy(50.0f);
+    }
+
+    private void HandleScaleSliderChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+    {
+        _timelineScale = (float)e.NewValue;
+        Timeline?.InvalidateVisual();
+    }
+
+    private void HandleMarkerSettingsChanged(object sender, RoutedEventArgs e)
+    {
+        Timeline?.InvalidateVisual();
+    }
+
+    private void ScrollBy(float value)
+    {
+        _timelineScroll += value;
+        if (_timelineScroll < -20) _timelineScroll = -20;
+        Timeline?.InvalidateVisual();
+        if (PositionDisplay != null) PositionDisplay.Text = (_timelineScroll / 1000).ToString("F3");
+    }
+}
