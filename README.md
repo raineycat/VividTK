@@ -31,6 +31,6 @@ This project includes:
 - Meta-notes that represent BPM changes are also displayed as markers, however BPM isn't handled properly in the editor yet
 - Modifiers/gimmicks are supported by the format library, however the editor can't display them yet, as they rely on knowing the BPM to display properly
 
-\* unified charts are charts where both the note data and modifier/gimmick data are stored in the binary VSB file. Some newer charts store this in seperate text-based VMV files, which the format library can't handle (yet)
+\* unified charts are charts where both the note data and modifier/gimmick data are stored in the binary VSB file. Some newer charts store this in seperate text-based VSM (with some metadata stored in VMV) files, which the format library can't handle (yet)
 
 ![Sample screenshot](Assets/Sample_ChartEd.png)
