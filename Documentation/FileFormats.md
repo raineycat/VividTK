@@ -8,7 +8,7 @@
 
 ## Data types
 While GML defines its own data types for buffer reading/writing, V/S often uses its own aliases for the types.
-For reference, these can be found in the `SongFieldTypeHelper` class ([SongFieldType.cs](VividTK.VSFormatLib/VSD/SongFieldType.cs)). Bear in mind that these names were all came up with by yours truly due to being unnamed constants in the code, so might not be fully accurate.
+For reference, these can be found in the `SongFieldTypeHelper` class ([SongFieldType.cs](../VividTK.VSFormatLib/VSD/SongFieldType.cs)). Bear in mind that these names were all came up with by yours truly due to being unnamed constants in the code, so might not be fully accurate.
 
 ## Binary VSD files
 While referred to as VSD files internally (e.g. `gml_GlobalScript_read_binary_vsd` and the file header), they don't use the `.vsd` file extension (using `.bin` instead). This extension is actually used for other miscellanious data, like the [banned user list](#banned-user-list) and the [menu portrait data](#menu-portrait-info).
@@ -19,7 +19,7 @@ Only version 1 has been used currently, and is implemented by the class `gml_Glo
 
 ### Song list
 The header is followed by any number of song info chunks, followed by an end-of-data marker byte.
-See [ObjectType.cs](VividTK.VSFormatLib/VSD/ObjectType.cs) for a list of the chunk types (and their IDs in hex) used in VSD files.
+See [ObjectType.cs](../VividTK.VSFormatLib/VSD/ObjectType.cs) for a list of the chunk types (and their IDs in hex) used in VSD files.
 
 Each song info chunk contains a number of sub-chunks, which can either be chart info chunks or song field chunks (both also defined in the ObjectType enum).
 
