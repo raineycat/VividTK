@@ -5,6 +5,7 @@ This project includes:
 
 #### Documentation!
 There's some WIP documentation on the file formats in this repo: [Documentation/FileFormats.md](Documentation/FileFormats.md)
+
 Feel free to contribute if you have any more knowledge on the game internals! ^w^
 
 #### VSFormatLib
