@@ -53,6 +53,11 @@ The currently used song field IDs are:
 ## Binary chart files
 TODO
 
+## Text chart files
+Some charts also come with `.vsc` and `.vsm` files, both of which are text-based representations of the chart data.
+These are built into [binary charts](#binary-chart-files) before release, and so don't serve a purpose for players.
+The VSC files contain the note data, while VSM files contain modifier data. These are both combined into one chart binary, though.
+
 ## Chart stat files
 Stat files (`.stats`) are INI files that contain some metadata about the song. Some of the fields include:
 - The SHA1 checksum of the associated binary chart. This is used to regenerate the file if the chart changes.
@@ -61,9 +66,6 @@ Stat files (`.stats`) are INI files that contain some metadata about the song. S
 - Other data
 
 ## Chart modifier files
-In newer charts, modifier data is stored in separate VSM files. 
-These are CSV files, and contain roughly the same data as the modifier section originally in the binary chart files.
-
 VMV files are also used to store metadata about the modifiers in a chart.
 They're INI files, with a few keys, but only `weight` seems to be loaded by the game.
 
