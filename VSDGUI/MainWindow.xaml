@@ -13,6 +13,7 @@
     </Window.Resources>
     
     <Window.CommandBindings>
+        <CommandBinding Command="ApplicationCommands.New" Executed="NewCommandHandler" />
         <CommandBinding Command="ApplicationCommands.Open" Executed="OpenCommandHandler" />
         <CommandBinding Command="ApplicationCommands.Save" Executed="SaveCommandHandler" />
         <CommandBinding Command="ApplicationCommands.SaveAs" Executed="SaveAsCommandHandler" />
@@ -20,6 +21,11 @@
         
         <CommandBinding Command="ApplicationCommands.Help" Executed="HelpCommandHandler" />
         <CommandBinding Command="ApplicationCommands.Close" Executed="CloseCommandHandler" />
+
+        <CommandBinding Command="local:EditCommands.AddSong" Executed="AddSongCommandHandler" />
+        <CommandBinding Command="local:EditCommands.RemoveSongs" Executed="RemoveSongsCommandHandler" CanExecute="CanExecuteIfAnySongsSelected" />
+        <CommandBinding Command="local:EditCommands.AddChart" Executed="AddChartCommandHandler" CanExecute="CanExecuteIfSingleSongSelected" />
+        <CommandBinding Command="local:EditCommands.RemoveChart" Executed="RemoveChartCommandHandler" />
     </Window.CommandBindings>
     
     <Window.Title>
@@ -32,6 +38,7 @@
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_File">
                 <MenuItem Header="_Open VSD..." Command="Open" />
+                <MenuItem Header="_New file..." Command="New" />
                 <MenuItem Header="_Save..." Command="Save" />
                 <MenuItem Header="Save _As..." Command="SaveAs" />
                 <MenuItem Header="Export _JSON..." Command="Print" />
@@ -40,6 +47,12 @@
                 
                 <MenuItem Header="_About" Command="Help" />
                 <MenuItem Header="_Quit" Command="Close" />
+            </MenuItem>
+
+            <MenuItem Header="_Edit">
+                <MenuItem Header="Add song" Command="local:EditCommands.AddSong" />
+                <MenuItem Header="Remove selected song(s)" Command="local:EditCommands.RemoveSongs" />
+                <MenuItem Header="Add chart" Command="local:EditCommands.AddChart" />
             </MenuItem>
         </Menu>
         
@@ -95,9 +108,9 @@
                             <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center">
                                 <TextBox Text="{Binding FormattedName}" FontSize="20" />
                                 <TextBlock Text=" (#" FontSize="20"/>
-                                <TextBlock Text="{Binding SongId}" FontSize="20"/>
+                                <TextBox Text="{Binding SongId}" FontSize="20"/>
                                 <TextBlock Text=": " FontSize="20"/>
-                                <TextBlock Text="{Binding ChartId}" FontSize="20"/>
+                                <TextBox Text="{Binding ChartId}" FontSize="20"/>
                                 <TextBlock Text=")" FontSize="20"/>
                                 <TextBlock Text="  -  " FontSize="20" />
                                 <TextBox Text="{Binding Artist}" FontSize="20" />
@@ -138,29 +151,41 @@
                             
                             <StackPanel Grid.Row="3" Orientation="Vertical">
                                 <TextBlock Text="Charts:" FontSize="15" HorizontalAlignment="Center" />
-                                <ListView ItemsSource="{Binding Charts}">
+                                <ListView ItemsSource="{Binding Charts}" x:Name="ChartList">
                                     <ListView.ItemContainerStyle>
                                         <Style TargetType="ListViewItem">
                                             <Setter Property="Focusable" Value="false"/>
+                                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                                         </Style>
                                     </ListView.ItemContainerStyle>
                                     
                                     <ListView.ItemTemplate>
                                         <DataTemplate DataType="{x:Type vsd:ChartInfo}">
-                                            <StackPanel Orientation="Vertical">
-                                                <!--<TextBlock Text="{Binding DifficultyDisplay}" />-->
-                                                <StackPanel Orientation="Horizontal">
-                                                    <TextBlock Text="Chart #" />
-                                                    <TextBlock Text="{Binding Index}" />
-                                                    <TextBlock Text=" (" />
-                                                    <TextBox Text="{Binding DifficultyConstant}" />
-                                                    <TextBlock Text=")" />
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="60" />
+                                                </Grid.ColumnDefinitions>
+                                                
+                                                <StackPanel Grid.Column="0" Orientation="Vertical">
+                                                    <!--<TextBlock Text="{Binding DifficultyDisplay}" />-->
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <TextBlock Text="Chart #" />
+                                                        <TextBlock Text="{Binding Index}" />
+                                                        <TextBlock Text=" (difficulty: " />
+                                                        <TextBox Text="{Binding DifficultyConstant}" />
+                                                        <TextBlock Text=")" />
+                                                    </StackPanel>
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <TextBlock Text="charted by " />
+                                                        <TextBox Text="{Binding NoteDesigner}" />
+                                                    </StackPanel>
                                                 </StackPanel>
-                                                <StackPanel Orientation="Horizontal">
-                                                    <TextBlock Text="charted by " />
-                                                    <TextBox Text="{Binding NoteDesigner}" />
-                                                </StackPanel>
-                                            </StackPanel>
+
+                                                <Button Grid.Column="1" Command="local:EditCommands.RemoveChart" CommandParameter="{Binding Index}">
+                                                    Remove
+                                                </Button>
+                                            </Grid>
                                         </DataTemplate>
                                     </ListView.ItemTemplate>
                                 </ListView>

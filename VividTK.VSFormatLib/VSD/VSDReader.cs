@@ -2,9 +2,11 @@
 
 public class VSDReader
 {
-    private readonly BinaryReader _reader;
+    private readonly BinaryReader? _reader = null;
 
-    public List<SongInfo> Songs { get; } = new();
+    public List<SongInfo> Songs { get; set; } = new();
+
+    public VSDReader() { }
 
     public VSDReader(BinaryReader br)
     {
@@ -43,6 +45,8 @@ public class VSDReader
 
     private SongInfo ReadSong()
     {
+        if (_reader == null) throw new InvalidOperationException("No data to read!");
+
         var song = new SongInfo(0);
         var charts = new List<ChartInfo>();
         //var chartType = ChartType.OPENING;

@@ -27,6 +27,9 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
         DataContext = this;
+
+        OpenFile = new VSDReader();
+        SongList.ItemsSource = new List<SongInfo>();
     }
 
     public void OpenCommandHandler(object sender, ExecutedRoutedEventArgs ev)
@@ -62,9 +65,33 @@ public partial class MainWindow : Window
         SelectionList.ItemsSource = SongList.SelectedItems;
     }
 
+    private void NewCommandHandler(object sender, ExecutedRoutedEventArgs e)
+    {
+        if(OpenFile != null)
+        {
+            if(MessageBox.Show(
+                this, 
+                "Are you sure you want to discard any changes and start a new file?", 
+                "VSDGUI",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Exclamation) 
+            != MessageBoxResult.Yes)
+            {
+                return;
+            }
+
+            OpenFile = null;
+            OpenFilePath = null;
+        }
+
+        OpenFile = new VSDReader();
+        SongList.ItemsSource = new List<SongInfo>();
+    }
+
     private void SaveCommandHandler(object sender, ExecutedRoutedEventArgs e)
     {
         if (OpenFile == null) return;
+        OpenFile.Songs = SongList.ItemsSource.Cast<SongInfo>().ToList();
 
         if (OpenFilePath == null)
         {
@@ -101,6 +128,7 @@ public partial class MainWindow : Window
     private void SaveAsCommandHandler(object sender, ExecutedRoutedEventArgs e)
     {
         if (OpenFile == null) return;
+        OpenFile.Songs = SongList.ItemsSource.Cast<SongInfo>().ToList();
 
         var dialog = new SaveFileDialog
         {
@@ -126,6 +154,9 @@ public partial class MainWindow : Window
 
     private void ExportCommandHandler(object sender, ExecutedRoutedEventArgs e)
     {
+        if (OpenFile == null) return;
+        OpenFile.Songs = SongList.ItemsSource.Cast<SongInfo>().ToList();
+
         var dialog = new SaveFileDialog
         {
             Title = "Select JSON export path...",
@@ -173,6 +204,66 @@ public partial class MainWindow : Window
         {
             Environment.Exit(0);   
         }
+    }
+
+    private void AddSongCommandHandler(object sender, ExecutedRoutedEventArgs e)
+    {
+        var infoList = SongList.ItemsSource.Cast<SongInfo>();
+        var lastId = infoList.Any() ? infoList.Max(i => i.SongId) : 1;
+        SongList.ItemsSource = infoList.Append(new SongInfo(lastId + 1));
+    }
+
+    private void RemoveSongsCommandHandler(object sender, ExecutedRoutedEventArgs e)
+    {
+        var toRemove = SongList.SelectedItems.Cast<SongInfo>().Select(i => i.SongId);
+        var source = SongList.ItemsSource.Cast<SongInfo>();
+        SongList.ItemsSource = source.Where(i => !toRemove.Contains(i.SongId)).ToList();
+        SelectionList.ItemsSource = null;
+    }
+
+    private void AddChartCommandHandler(object sender, ExecutedRoutedEventArgs e)
+    {
+        var selectedSong = (SongInfo)SongList.SelectedItem;
+        var lastIndex = selectedSong.Charts.Count;
+        selectedSong.Charts.Add(new ChartInfo
+        {
+            Index = lastIndex + 1
+        });
+        SelectionList.ItemsSource = new List<SongInfo> { selectedSong };
+    }
+
+    private void RemoveChartCommandHandler(object sender, ExecutedRoutedEventArgs e)
+    {
+        var song = (SongInfo)SongList.SelectedItem;
+
+        if (e.Parameter == null)
+        {
+            song.Charts.RemoveAt(song.Charts.Count - 1);
+        } 
+        else
+        {
+            var index = (int)e.Parameter;
+            song.Charts.RemoveAt(index - 1); // the Index property starts at 1
+        }
+
+        // fix indices
+        song.Charts = song.Charts.Select((c, i) =>
+        {
+            c.Index = i + 1;
+            return c;
+        }).ToList();
+
+        SelectionList.ItemsSource = new List<SongInfo> { song };
+    }
+
+    private void CanExecuteIfSingleSongSelected(object sender, CanExecuteRoutedEventArgs e)
+    {
+        e.CanExecute = SongList.SelectedItems.Count == 1;
+    }
+
+    private void CanExecuteIfAnySongsSelected(object sender, CanExecuteRoutedEventArgs e)
+    {
+        e.CanExecute = SongList.SelectedItems.Count > 0;
     }
 
     private void DropFileHandler(object sender, DragEventArgs e)
