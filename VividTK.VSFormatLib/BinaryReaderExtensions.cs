@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using VividTK.VSFormatLib.Chart;
 using VividTK.VSFormatLib.VSD;
 
 namespace VividTK.VSFormatLib
@@ -21,6 +22,7 @@ namespace VividTK.VSFormatLib
         
         public static void Write(this BinaryWriter w, ObjectType val) => w.Write((byte)val);
         public static void Write(this BinaryWriter w, SongField val) => w.Write((byte)val);
+        public static void Write(this BinaryWriter w, ChartDataType val) => w.Write((byte)val);
         public static void Write(this BinaryWriter w, SongFieldType val) => w.Write(SongFieldTypeHelper.FieldTypeToByte(val));
 
         public static void WriteTerminatedString(this BinaryWriter w, string str, char terminator = '\0')

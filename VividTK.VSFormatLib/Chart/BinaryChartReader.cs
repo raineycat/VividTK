@@ -2,14 +2,14 @@
 
 namespace VividTK.VSFormatLib.Chart;
 
-public class ChartReader
+public class BinaryChartReader : IChartReader
 {
-    public List<NoteData> Notes = [];
-    public List<GimmickData> Gimmicks = [];
+    public List<NoteData> Notes { get; set; } = [];
+    public GimmickData Gimmick { get; set; }
     
     private readonly BinaryReader _reader;
 
-    public ChartReader(BinaryReader br)
+    public BinaryChartReader(BinaryReader br)
     {
         _reader = br;
 
@@ -85,7 +85,7 @@ public class ChartReader
                     note.Time = _reader.ReadSingle();
                     break;
                 case ChartDataType.NoteEntryExtra:
-                    note.Extra = ReadNoteExtra();
+                    note = ReadNoteExtra(note);
                     break;
             }
         } while (flag != ChartDataType.NoteEntryEnd);
@@ -110,7 +110,7 @@ public class ChartReader
         Notes.Add(note);
     }
 
-    private Dictionary<byte, object> ReadNoteExtra()
+    private NoteData ReadNoteExtra(NoteData note)
     {
         var fields = new Dictionary<byte, object>();
         ChartDataType type;
@@ -127,7 +127,27 @@ public class ChartReader
             }
         } while (type != ChartDataType.NoteExtraEnd);
 
-        return fields;
+        switch(note.Type)
+        {
+            case NoteType.Hold:
+                note.EndTime = (int)fields[1];
+                break;
+
+            case NoteType.TempoChange:
+                if (fields[1] is int bpm)
+                {
+                    note.BPM = (float)bpm;
+                    Console.WriteLine("BPM int");
+                } 
+                else if (fields[1] is float bpmFloat)
+                {
+                    note.BPM = bpmFloat;
+                    Console.WriteLine("BPM float");
+                }
+                break;
+        }
+
+        return note;
     }
 
     private void ReadGimmickData()
@@ -152,7 +172,7 @@ public class ChartReader
             }
         } while (flag != ChartDataType.GimmickEnd);
         
-        Gimmicks.Add(data);
+        Gimmick = data;
     }
 
     private GimmickData ReadGimmickModData(GimmickData data)
@@ -185,8 +205,8 @@ public class ChartReader
             StartOffset = _reader.ReadSingle(),
             Duration = _reader.ReadSingle(),
             Ease = (Easing)_reader.ReadByte(),
-            V1 = _reader.ReadSingle(),
-            V2 = _reader.ReadSingle(),
+            From = _reader.ReadSingle(),
+            To = _reader.ReadSingle(),
             Type = (ModType)_reader.ReadByte(),
             ProxyIndex = _reader.ReadChar()
         };

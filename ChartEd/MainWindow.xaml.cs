@@ -14,7 +14,7 @@ namespace ChartEd;
 /// </summary>
 public partial class MainWindow
 {
-    private ChartReader? _chart;
+    private IChartReader? _chart;
     private float _timelineScroll;
     private float _timelineScale = 0.5f;
         
@@ -187,13 +187,13 @@ public partial class MainWindow
                     break;
                 
                 case NoteType.Hold:
-                    var holdTime = note.HoldEndMillis - note.Time;
+                    var holdTime = note.EndTime - note.Time;
                     canvas.DrawRect(xPos + 2.5f, yPos - _timelineScroll, laneWidth - 5, noteHeight + holdTime * _timelineScale, chipPaint);
                     break;
                 
                 case NoteType.TempoChange:
-                    var newTempo = note.NewTempo;
-                    var text = newTempo != null ? $"TEMPO TO: {newTempo}bpm" : "nullbpm";
+                    var newTempo = note.BPM;
+                    var text = $"TEMPO TO: {newTempo}bpm";
                     
                     canvas.DrawLine(0, yPos - _timelineScroll - 20, 
                         (float)Timeline.Width, yPos - _timelineScroll - 20, markerPaint);

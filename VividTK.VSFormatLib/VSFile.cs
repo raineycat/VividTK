@@ -13,11 +13,21 @@ public static class VSFile
         return vsd;
     }
 
-    public static ChartReader ReadSingleChart(string path)
+    public static IChartReader ReadSingleChart(string chartPath, bool text = false)
     {
-        using var stream = File.OpenRead(path);
-        using var binaryReader = new BinaryReader(stream);
-        var chart = new ChartReader(binaryReader);
+        using var stream = File.OpenRead(chartPath);
+        IChartReader chart;
+
+        if(text)
+        {
+            using var reader = new StreamReader(stream);
+            chart = new TextChartReader(reader);
+        } else
+        {
+            using var reader = new BinaryReader(stream);
+            chart = new BinaryChartReader(reader);
+        }
+
         return chart;
     }
 }

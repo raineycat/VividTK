@@ -166,4 +166,10 @@ public static class ModTypeHelper
             _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
         };
     }
+
+    public static ModType FromString(string s)
+    {
+        var values = Enum.GetValues<ModType>();
+        return values.FirstOrDefault(v => v.ToString().Equals(s, StringComparison.InvariantCultureIgnoreCase), ModType.unknown);
+    }
 }

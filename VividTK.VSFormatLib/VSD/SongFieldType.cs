@@ -79,5 +79,51 @@
                 SongFieldType.Invalid => throw new InvalidOperationException(),
                 _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
             };
+
+        public static SongFieldType GuessFromManagedType(object o)
+        {
+            if (o is byte) return SongFieldType.U8;
+            if (o is char) return SongFieldType.S8;
+            if (o is uint) return SongFieldType.U32;
+            if (o is int) return SongFieldType.S32;
+            if (o is Half) return SongFieldType.F16;
+            if (o is float) return SongFieldType.F32;
+            if (o is bool) return SongFieldType.Bool;
+            if (o is string) return SongFieldType.String;
+            return SongFieldType.Invalid;
+        }
+
+        public static void WriteSongField(this BinaryWriter writer, object o, SongFieldType type)
+        {
+            switch (type)
+            {
+                case SongFieldType.U8:
+                    writer.Write((byte)o);
+                    break;
+                case SongFieldType.S8:
+                    writer.Write((char)o);
+                    break;
+                case SongFieldType.U32:
+                    writer.Write((uint)o);
+                    break;
+                case SongFieldType.S32:
+                    writer.Write((int)o);
+                    break;
+                case SongFieldType.F16:
+                    writer.Write((Half)o);
+                    break;
+                case SongFieldType.F32:
+                    writer.Write((float)o);
+                    break;
+                case SongFieldType.Bool:
+                    writer.Write((bool)o);
+                    break;
+                case SongFieldType.String:
+                    writer.Write((string)o);
+                    break;
+                case SongFieldType.Invalid:
+                    break;
+            }
+        }
     }
 }

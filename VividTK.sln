@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VSDGUI", "VSDGUI\VSDGUI.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChartEd", "ChartEd\ChartEd.csproj", "{8E068159-D3E3-4A6C-B5AF-03785FC6B039}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChartBuilder", "ChartBuilder\ChartBuilder.csproj", "{5A90E812-BDFB-B4CF-ED4A-A4F79D501CF1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{8E068159-D3E3-4A6C-B5AF-03785FC6B039}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8E068159-D3E3-4A6C-B5AF-03785FC6B039}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8E068159-D3E3-4A6C-B5AF-03785FC6B039}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5A90E812-BDFB-B4CF-ED4A-A4F79D501CF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A90E812-BDFB-B4CF-ED4A-A4F79D501CF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A90E812-BDFB-B4CF-ED4A-A4F79D501CF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A90E812-BDFB-B4CF-ED4A-A4F79D501CF1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
