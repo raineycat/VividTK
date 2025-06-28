@@ -73,6 +73,12 @@ public class BinaryChartReader : IChartReader
         do
         {
             flag = (ChartDataType)_reader.ReadByte();
+
+            if((flag & ChartDataType.NoteEntryStart) != ChartDataType.NoteEntryStart)
+            {
+                throw new InvalidOperationException("Invalid note entry flag!");
+            }
+
             switch (flag)
             {
                 case ChartDataType.NoteEntryType:
@@ -120,6 +126,12 @@ public class BinaryChartReader : IChartReader
             type = (ChartDataType)_reader.ReadByte();
             if (type != ChartDataType.NoteExtraEnd)
             {
+                // 0xB0 is the mask for data types
+                if (((byte)type & 0xB0) != 0xB0)
+                {
+                    throw new InvalidOperationException("Invalid extra entry flag!");
+                }
+
                 var fieldId = _reader.ReadByte();
                 var dataType = SongFieldTypeHelper.ByteToFieldType((byte)type);
                 var data = dataType.ReadFrom(_reader);

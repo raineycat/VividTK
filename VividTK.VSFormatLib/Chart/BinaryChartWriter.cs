@@ -89,6 +89,7 @@ public static class BinaryChartWriter
             writer.WriteTerminatedString(perFrame.FunctionName);
         }
 
+        writer.Write(ChartDataType.GimmickModEnd);
         writer.Write(ChartDataType.GimmickEnd);
     }
 

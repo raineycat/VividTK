@@ -187,7 +187,7 @@ public class TextChartReader : IChartReader
 
                 mod.Weight = ModTypeHelper.GetModWeight(mod.Type);
 
-                for(var beat = beatStart; beat < beatEnd; beat += beatIncrement)
+                for(var beat = beatStart; beat <= beatEnd; beat += beatIncrement)
                 {
                     // this copies `mod` for each beat
                     mod.StartOffset = beat;
