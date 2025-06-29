@@ -86,7 +86,7 @@ public static class ModTypeHelper
     {
         if (IsChartSpecific(type))
         {
-            return -1;
+            return 1f;
         }
         
         return type switch {

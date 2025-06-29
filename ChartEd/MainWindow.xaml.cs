@@ -246,4 +246,56 @@ public partial class MainWindow
         Timeline?.InvalidateVisual();
         if (PositionDisplay != null) PositionDisplay.Text = (_timelineScroll / 1000).ToString("F3");
     }
+
+    private void HandleTimelineMouseDown(object sender, MouseButtonEventArgs e)
+    {
+        if (_chart == null) return;
+
+        var actualMouseX = (float)(e.GetPosition(Timeline).X);
+        var actualMouseY = (float)(e.GetPosition(Timeline).Y + _timelineScroll);
+
+        if (e.RightButton == MouseButtonState.Pressed)
+        {
+            _chart.Notes.RemoveAll(n => IsHoveredNote(n, actualMouseX, actualMouseY));
+            Timeline?.InvalidateVisual();
+            return;
+        }
+    }
+
+    private bool IsHoveredNote(NoteData note, float mouseX, float mouseY)
+    {
+        const float noteHeight = 20.0f;
+        const int laneCount = 4;
+        var laneWidth = (Timeline.CanvasSize.Width - 10) / laneCount;
+        var noteY = 50 + note.Time * _timelineScale;
+
+        switch (note.Type)
+        {
+            case NoteType.Chip:
+            case NoteType.Mine:
+                return mouseY >= noteY &&
+                        mouseY < noteY + noteHeight &&
+                        mouseX >= laneWidth * (byte)note.Lane &&
+                        mouseX < laneWidth * ((byte)note.Lane + 1);
+
+            case NoteType.Hold:
+                var holdTime = note.EndTime - note.Time;
+                return mouseY >= noteY &&
+                        mouseY < noteY + holdTime &&
+                        mouseX >= laneWidth * (byte)note.Lane &&
+                        mouseX < laneWidth * ((byte)note.Lane + 1);
+
+            case NoteType.Bumper:
+            case NoteType.BumperMine:
+            case NoteType.BumperUnknown8:
+                return mouseY >= noteY &&
+                        mouseY < noteY + noteHeight &&
+                        mouseX >= laneWidth * ((byte)note.Lane - 4) &&
+                        mouseX < laneWidth * ((byte)note.Lane - 2);
+
+            default:
+                return false;
+        }
+        
+    }
 }
