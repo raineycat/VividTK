@@ -142,19 +142,28 @@ public class BinaryChartReader : IChartReader
         switch(note.Type)
         {
             case NoteType.Hold:
-                note.EndTime = (int)fields[1];
+                if (fields[1] is int endTime)
+                {
+                    note.EndTime = (float)endTime;
+                    //Console.WriteLine("EndTime int");
+                }
+                else if (fields[1] is float endTimeFloat)
+                {
+                    note.EndTime = endTimeFloat;
+                    //Console.WriteLine("EndTime float");
+                }
                 break;
 
             case NoteType.TempoChange:
                 if (fields[1] is int bpm)
                 {
                     note.BPM = (float)bpm;
-                    Console.WriteLine("BPM int");
+                    //Console.WriteLine("BPM int");
                 } 
                 else if (fields[1] is float bpmFloat)
                 {
                     note.BPM = bpmFloat;
-                    Console.WriteLine("BPM float");
+                    //Console.WriteLine("BPM float");
                 }
                 break;
         }
@@ -220,9 +229,10 @@ public class BinaryChartReader : IChartReader
             From = _reader.ReadSingle(),
             To = _reader.ReadSingle(),
             Type = (ModType)_reader.ReadByte(),
-            ProxyIndex = _reader.ReadChar()
+            ProxyIndex = unchecked((sbyte)_reader.ReadByte())
         };
-        
+
+        // Console.WriteLine("R: ProxyIdx: " + (int)data.ProxyIndex);
         data.Weight = ModTypeHelper.GetModWeight(data.Type);
         return data;
     }

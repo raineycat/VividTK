@@ -166,7 +166,7 @@ public class TextChartReader : IChartReader
                 mod.Duration = float.Parse(parts[1]);
                 mod.Ease = EasingHelper.FromString(parts[2]);
                 mod.Type = ModTypeHelper.FromString(parts[5]);
-                mod.ProxyIndex = (char)int.Parse(parts[6]);
+                mod.ProxyIndex = (sbyte)int.Parse(parts[6]);
 
                 var beatParts = parts[0].Split(':');
                 var beatStart = float.Parse(beatParts[0]);

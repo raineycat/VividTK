@@ -1,4 +1,5 @@
-﻿using VividTK.VSFormatLib;
+﻿using System.Text;
+using VividTK.VSFormatLib;
 using VividTK.VSFormatLib.Chart;
 
 if (args.Length < 1)
@@ -26,6 +27,6 @@ if(chart.Gimmick.PerFrame != null) Console.WriteLine($"->  {chart.Gimmick.PerFra
 var outputPath = Path.GetFileNameWithoutExtension(args[0]) + "_ChartBuilder.vsb";
 Console.WriteLine($"Writing to: {outputPath}");
 
-using var writer = new BinaryWriter(File.OpenWrite(outputPath));
+using var writer = new BinaryWriter(File.OpenWrite(outputPath), Encoding.ASCII);
 BinaryChartWriter.WriteChart(chart, writer);
 Console.WriteLine("Done!");

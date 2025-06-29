@@ -8,6 +8,6 @@ public struct ModData
     public float From; // originally 'v1'
     public float To; // originally 'v2'
     public ModType Type;
-    public char ProxyIndex;
+    public sbyte ProxyIndex;
     public float Weight;
 }

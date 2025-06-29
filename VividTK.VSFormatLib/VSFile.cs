@@ -1,4 +1,5 @@
-﻿using VividTK.VSFormatLib.Chart;
+﻿using System.Text;
+using VividTK.VSFormatLib.Chart;
 using VividTK.VSFormatLib.VSD;
 
 namespace VividTK.VSFormatLib;
@@ -24,7 +25,7 @@ public static class VSFile
             chart = new TextChartReader(reader);
         } else
         {
-            using var reader = new BinaryReader(stream);
+            using var reader = new BinaryReader(stream, Encoding.ASCII);
             chart = new BinaryChartReader(reader);
         }
 

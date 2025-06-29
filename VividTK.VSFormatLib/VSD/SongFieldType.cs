@@ -28,15 +28,15 @@
                 6 => SongFieldType.U8,
                 7 => SongFieldType.S8,
 
-                176 => SongFieldType.U8,
-                177 => SongFieldType.S8,
-                178 => SongFieldType.U32,
-                179 => SongFieldType.S32,
+                0xB0 => SongFieldType.U8,
+                0xB1 => SongFieldType.S8,
+                0xB2 => SongFieldType.U32,
+                0xB3 => SongFieldType.S32,
 
-                181 => SongFieldType.F16,
-                182 => SongFieldType.F32,
-                183 => SongFieldType.Bool,
-                184 => SongFieldType.String,
+                0xB5 => SongFieldType.F16,
+                0xB6 => SongFieldType.F32,
+                0xB7 => SongFieldType.Bool,
+                0xB8 => SongFieldType.String,
 
                 _ => SongFieldType.Invalid
             };
