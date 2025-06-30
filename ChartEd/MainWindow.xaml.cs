@@ -251,7 +251,15 @@ public partial class MainWindow
                 case NoteType.Bumper:
                     canvas.DrawRect(xPos + 2.5f, yPos - _timelineScroll, laneWidth * 2 - 5, noteHeight, GetPaintForLane(note.Lane));
                     break;
-                
+
+                case NoteType.BumperMine:
+                    canvas.DrawRect(xPos + 2.5f, yPos - _timelineScroll, laneWidth * 2 - 5, noteHeight, minePaint);
+                    break;
+
+                case NoteType.AbsoluteBumper:
+                    canvas.DrawRect(xPos + 2.5f, yPos - _timelineScroll, laneWidth * 2 - 5, noteHeight, errorPaint);
+                    break;
+
                 case NoteType.Hold:
                     var holdTime = note.EndTime - note.Time;
                     canvas.DrawRect(xPos + 2.5f, yPos - _timelineScroll, laneWidth - 5, noteHeight + holdTime * _timelineScale, GetPaintForLane(note.Lane));
@@ -364,7 +372,7 @@ public partial class MainWindow
                     Type = Enum.Parse<NoteType>(PlacingNoteInput.SelectedValue as string ?? "Chip")
                 };
 
-                if(actualNote.Type is NoteType.Bumper or NoteType.BumperMine or NoteType.BumperUnknown8)
+                if(actualNote.Type is NoteType.Bumper or NoteType.BumperMine or NoteType.AbsoluteBumper)
                 {
                     actualNote.Lane = (LaneType)((byte)actualNote.Lane + 4);
                     if((byte)actualNote.Lane > (byte)LaneType.RightBumper)
@@ -426,15 +434,18 @@ public partial class MainWindow
 
             case NoteType.Bumper:
             case NoteType.BumperMine:
-            case NoteType.BumperUnknown8:
+            case NoteType.AbsoluteBumper:
                 return mouseY >= noteY &&
                         mouseY < noteY + noteHeight &&
                         mouseX >= laneWidth * ((byte)note.Lane - 4) &&
                         mouseX < laneWidth * ((byte)note.Lane - 2);
 
+            case NoteType.TempoChange:
+                return mouseY >= noteY - 10f && mouseY < noteY + 10f;
+
             default:
                 return false;
-        }
+}
         
     }
 }

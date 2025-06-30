@@ -33,7 +33,7 @@ public enum NoteType : byte
     BumperMine = 7,
     
     /// <summary>
-    /// Unknown bumper type #8
+    /// Absolute bumper notes
     /// </summary>
-    BumperUnknown8 = 8,
+    AbsoluteBumper = 8,
 }

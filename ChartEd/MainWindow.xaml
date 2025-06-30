@@ -132,7 +132,7 @@
             </StackPanel>
             
             <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" />
-            <skia:SKElement Grid.Column="2" x:Name="Timeline" 
+            <skia:SKElement Grid.Column="2" x:Name="Timeline"                   
                             PaintSurface="HandleTimelinePaint"
                             MouseWheel="HandleTimelineMouseWheel"
                             MouseDown="HandleTimelineMouseDown" />

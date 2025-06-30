@@ -6,4 +6,5 @@ obj/
 
 *.vsb
 *.vsd
+copy*.bat
 ReferenceCode/

@@ -89,7 +89,7 @@
             <ed:FloatInput Grid.Column="2" Grid.Row="5" x:Name="EndTimeInput" ValueChanged="EndTimeInput_ValueChanged" />
 
             <Label Grid.Column="1" Grid.Row="6">BPM (tempo changes):</Label>
-            <ed:FloatInput Grid.Column="2" Grid.Row="6" x:Name="TempoInput" FormatCode="F0" ValueChanged="TempoInput_ValueChanged" />
+            <ed:FloatInput Grid.Column="2" Grid.Row="6" x:Name="TempoInput" ValueChanged="TempoInput_ValueChanged" />
         </Grid>
 
         <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
