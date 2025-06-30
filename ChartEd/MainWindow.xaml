@@ -55,7 +55,46 @@
                 </StackPanel>
                 
                 <Label FontWeight="Bold" HorizontalContentAlignment="Center">Controls:</Label>
-                <StackPanel Orientation="Horizontal">
+                <RichTextBox Margin="0,0,0,5" IsReadOnly="True">
+                    <FlowDocument>
+                        <Section>
+                            <Paragraph>How to use this editor:</Paragraph>
+                            <List>
+                                <ListItem>
+                                    <Paragraph>
+                                        <Bold>Left click</Bold> 
+                                        to add a note
+                                    </Paragraph>
+                                </ListItem>
+                                <ListItem>
+                                    <Paragraph>
+                                        <Bold>Ctrl+Left click</Bold>
+                                        to add a note and open its properties
+                                    </Paragraph>
+                                </ListItem>
+                                <ListItem>
+                                    <Paragraph>
+                                        <Bold>Right click</Bold>
+                                        to delete a note
+                                    </Paragraph>
+                                </ListItem>
+                                <ListItem>
+                                    <Paragraph>
+                                        Click on an existing note
+                                        to open its properties
+                                    </Paragraph>
+                                </ListItem>
+                                <ListItem>
+                                    <Paragraph>
+                                        Use the dropdown below to change 
+                                        what kind of note gets places
+                                    </Paragraph>
+                                </ListItem>
+                            </List>
+                        </Section>
+                    </FlowDocument>
+                </RichTextBox>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                     <Button Click="HandleScrollUpButtonClick" Margin="0,0,10,0">Scroll up</Button>
                     <Button Click="HandleScrollResetButtonClick" Margin="0,0,10,0">Reset</Button>
                     <Button Click="HandleScrollDownButtonClick">Scroll down</Button>
