@@ -10,6 +10,9 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <Page Update="NotePropertiesDialog.xaml">
+        <XamlRuntime>Wpf</XamlRuntime>
+      </Page>
       <Page Update="AboutDialog.xaml">
         <Generator>MSBuild:Compile</Generator>
         <XamlRuntime>Wpf</XamlRuntime>

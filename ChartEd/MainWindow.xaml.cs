@@ -154,13 +154,20 @@ public partial class MainWindow
         var startY = 50 - _timelineScroll;
         canvas.DrawLine(0, startY, (float)Timeline.Width, startY, markerPaint);
 
-        var chipPaint = new SKPaint
+        var leftChipPaint = new SKPaint
         {
             Color = SKColors.Aqua,
             Style = SKPaintStyle.StrokeAndFill,
             StrokeCap = SKStrokeCap.Round
         };
-        
+
+        var rightChipPaint = new SKPaint
+        {
+            Color = SKColors.LightPink,
+            Style = SKPaintStyle.StrokeAndFill,
+            StrokeCap = SKStrokeCap.Round
+        };
+
         var errorPaint = new SKPaint
         {
             Color = SKColors.Green,
@@ -181,7 +188,14 @@ public partial class MainWindow
             Style = SKPaintStyle.StrokeAndFill,
             StrokeCap = SKStrokeCap.Round
         };
-        
+
+        var middleBumperPaint = new SKPaint
+        {
+            Color = SKColors.MediumPurple,
+            Style = SKPaintStyle.StrokeAndFill,
+            StrokeCap = SKStrokeCap.Round
+        };
+
         var minePaint = new SKPaint
         {
             Color = SKColors.DarkGray,
@@ -191,6 +205,16 @@ public partial class MainWindow
         
         var markerFont = new SKFont(SKTypeface.FromFamilyName("Arial"));
         markerFont.Size = (float)MarkerSizeSlider.Value;
+
+        SKPaint GetPaintForLane(LaneType lane) => lane switch
+        {
+            LaneType.Lane1 or LaneType.Lane2 => leftChipPaint,
+            LaneType.Lane3 or LaneType.Lane4 => rightChipPaint,
+            LaneType.LeftBumper => leftBumperPaint,
+            LaneType.MiddleBumper => middleBumperPaint,
+            LaneType.RightBumper => rightBumperPaint,
+            _ => errorPaint
+        };
         
         foreach (var note in _chart.Notes)
         {
@@ -205,7 +229,7 @@ public partial class MainWindow
             switch (note.Type)
             {
                 case NoteType.Chip:
-                    canvas.DrawRect(xPos + 2.5f, yPos - _timelineScroll, laneWidth - 5, noteHeight, chipPaint);
+                    canvas.DrawRect(xPos + 2.5f, yPos - _timelineScroll, laneWidth - 5, noteHeight, GetPaintForLane(note.Lane));
                     break;
                 
                 case NoteType.Mine:
@@ -213,15 +237,14 @@ public partial class MainWindow
                     break;
                 
                 case NoteType.Bumper:
-                    canvas.DrawRect(xPos + 2.5f, yPos - _timelineScroll, laneWidth * 2 - 5, noteHeight, 
-                        note.Lane == LaneType.LeftBumper ? leftBumperPaint : rightBumperPaint);
+                    canvas.DrawRect(xPos + 2.5f, yPos - _timelineScroll, laneWidth * 2 - 5, noteHeight, GetPaintForLane(note.Lane));
                     break;
                 
                 case NoteType.Hold:
                     var holdTime = note.EndTime - note.Time;
-                    canvas.DrawRect(xPos + 2.5f, yPos - _timelineScroll, laneWidth - 5, noteHeight + holdTime * _timelineScale, chipPaint);
+                    canvas.DrawRect(xPos + 2.5f, yPos - _timelineScroll, laneWidth - 5, noteHeight + holdTime * _timelineScale, GetPaintForLane(note.Lane));
                     break;
-                
+                    
                 case NoteType.TempoChange:
                     var newTempo = note.BPM;
                     var text = $"TEMPO TO: {newTempo}bpm";
@@ -275,7 +298,7 @@ public partial class MainWindow
         _timelineScroll += value;
         if (_timelineScroll < -20) _timelineScroll = -20;
         Timeline?.InvalidateVisual();
-        if (PositionDisplay != null) PositionDisplay.Text = (_timelineScroll / 1000).ToString("F3");
+        if (PositionDisplay != null) PositionDisplay.Text = ((_timelineScroll * _timelineScale - 50) / 1000).ToString("F3");
     }
 
     private void HandleTimelineMouseDown(object sender, MouseButtonEventArgs e)
@@ -295,7 +318,39 @@ public partial class MainWindow
         {
             //todo: show note properties dialog
             // (change type, change extra fields)
-            // if no note is hovered, add one and then show dlg
+            // if no note is hovered, add one and then show 
+
+            NoteData actualNote;
+            NoteData? existingNote = null;
+            try
+            {
+                existingNote = _chart.Notes.First(n => IsHoveredNote(n, actualMouseX, actualMouseY));
+                actualNote = existingNote.Value;
+            }
+            catch (InvalidOperationException)
+            {
+                var currentTime = actualMouseY;
+                var laneWidth = (Timeline.CanvasSize.Width - 10) / 4;
+                var currentLane = (byte)Math.Floor(actualMouseX / laneWidth);
+
+                actualNote = new NoteData
+                {
+                    Time = currentTime,
+                    Lane = (LaneType)currentLane
+                };
+            }
+
+            var dlg = new NotePropertiesDialog(actualNote)
+            {
+                Owner = this
+            };
+
+            if (dlg.ShowDialog().GetValueOrDefault())
+            {
+                if(existingNote.HasValue) _chart.Notes.Remove(existingNote.Value);
+                _chart.Notes.Add(dlg.Note);
+                Timeline.InvalidateVisual();
+            }
         }
     }
 
