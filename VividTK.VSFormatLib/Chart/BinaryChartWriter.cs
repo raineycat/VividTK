@@ -6,9 +6,9 @@ public static class BinaryChartWriter
 {
     public static void WriteChart(IChartReader chart, BinaryWriter writer)
     {
-        writer.Write('V');
-        writer.Write('S');
-        writer.Write('C');
+        writer.Write((byte)'V');
+        writer.Write((byte)'S');
+        writer.Write((byte)'C');
         writer.Write((byte)1);
         writer.Write((byte)0);
 
@@ -22,6 +22,9 @@ public static class BinaryChartWriter
         WriteGimmickData(chart.Gimmick, writer);
 
         writer.Write(ChartDataType.ChartEnd);
+
+        // Write blank signature
+        writer.Write(new byte[384]);
     }
 
     private static void WriteNote(NoteData note, BinaryWriter writer)

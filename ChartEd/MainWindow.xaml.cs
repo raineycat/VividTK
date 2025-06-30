@@ -1,9 +1,11 @@
-﻿using System.Diagnostics;
-using System.Windows;
-using System.Windows.Input;
-using Microsoft.Win32;
+﻿using Microsoft.Win32;
 using SkiaSharp;
 using SkiaSharp.Views.Desktop;
+using System.Diagnostics;
+using System.IO;
+using System.Text;
+using System.Windows;
+using System.Windows.Input;
 using VividTK.VSFormatLib;
 using VividTK.VSFormatLib.Chart;
 
@@ -50,7 +52,36 @@ public partial class MainWindow
             MessageBox.Show(this, $"Failed to read chart!\n\n{e}");
         }
     }
-    
+
+    public void SaveAsCommandHandler(object sender, ExecutedRoutedEventArgs ev)
+    {
+        if (_chart == null) return;
+
+        var dialog = new SaveFileDialog
+        {
+            Title = "Save chart...",
+            Filter = "VSB Files|*.vsb|All files|*.*",
+            AddExtension = true,
+            FileName = "DIFFICULTY.vsb"
+        };
+
+        if (!(dialog.ShowDialog(this) ?? false))
+        {
+            return;
+        }
+
+        try
+        {
+            using var writer = new BinaryWriter(File.OpenWrite(dialog.FileName), Encoding.ASCII);
+            BinaryChartWriter.WriteChart(_chart, writer);
+            MessageBox.Show(this, "Saved!", "ChartEd", MessageBoxButton.OK, MessageBoxImage.Asterisk);
+        }
+        catch (Exception e)
+        {
+            MessageBox.Show(this, $"Failed to save chart!\n\n{e}");
+        }
+    }
+
     private void HelpCommandHandler(object sender, ExecutedRoutedEventArgs e)
     {
         new AboutDialog
@@ -259,6 +290,12 @@ public partial class MainWindow
             _chart.Notes.RemoveAll(n => IsHoveredNote(n, actualMouseX, actualMouseY));
             Timeline?.InvalidateVisual();
             return;
+        }
+        else if (e.LeftButton == MouseButtonState.Pressed)
+        {
+            //todo: show note properties dialog
+            // (change type, change extra fields)
+            // if no note is hovered, add one and then show dlg
         }
     }
 

@@ -27,6 +27,16 @@ if(chart.Gimmick.PerFrame != null) Console.WriteLine($"->  {chart.Gimmick.PerFra
 var outputPath = Path.GetFileNameWithoutExtension(args[0]) + "_ChartBuilder.vsb";
 Console.WriteLine($"Writing to: {outputPath}");
 
-using var writer = new BinaryWriter(File.OpenWrite(outputPath), Encoding.ASCII);
+Stream outStream;
+
+if(isTextChart)
+{
+    outStream = File.OpenWrite(outputPath);
+} else
+{
+    outStream = new ValidationStream(File.OpenWrite(outputPath), File.OpenRead(args[0]));
+}
+
+using var writer = new BinaryWriter(outStream, Encoding.ASCII);
 BinaryChartWriter.WriteChart(chart, writer);
 Console.WriteLine("Done!");

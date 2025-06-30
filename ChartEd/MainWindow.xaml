@@ -13,6 +13,7 @@
     
     <Window.CommandBindings>
         <CommandBinding Command="ApplicationCommands.Open" Executed="OpenCommandHandler" />
+        <CommandBinding Command="ApplicationCommands.SaveAs" Executed="SaveAsCommandHandler" />
         
         <CommandBinding Command="ApplicationCommands.Help" Executed="HelpCommandHandler" />
         <CommandBinding Command="ApplicationCommands.Close" Executed="CloseCommandHandler" />
@@ -22,6 +23,7 @@
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_File">
                 <MenuItem Header="_Open chart..." Command="Open" />
+                <MenuItem Header="_Save as..." Command="SaveAs" />
                 
                 <Separator />
                 
