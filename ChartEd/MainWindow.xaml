@@ -12,6 +12,7 @@
     </Window.Resources>
     
     <Window.CommandBindings>
+        <CommandBinding Command="ApplicationCommands.New" Executed="NewCommandHandler" />
         <CommandBinding Command="ApplicationCommands.Open" Executed="OpenCommandHandler" />
         <CommandBinding Command="ApplicationCommands.SaveAs" Executed="SaveAsCommandHandler" />
         
@@ -22,6 +23,7 @@
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_File">
+                <MenuItem Header="_New chart" Command="New" />
                 <MenuItem Header="_Open chart..." Command="Open" />
                 <MenuItem Header="_Save as..." Command="SaveAs" />
                 

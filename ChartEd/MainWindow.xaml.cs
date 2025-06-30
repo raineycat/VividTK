@@ -24,6 +24,12 @@ public partial class MainWindow
     {
         InitializeComponent();
     }
+
+    public void NewCommandHandler(object sender, ExecutedRoutedEventArgs ev)
+    {
+        _chart = new InMemoryChartReader();
+        Timeline.InvalidateVisual(); // no idea if this is needed or not but eh
+    }
     
     public void OpenCommandHandler(object sender, ExecutedRoutedEventArgs ev)
     {
@@ -329,7 +335,7 @@ public partial class MainWindow
             }
             catch (InvalidOperationException)
             {
-                var currentTime = actualMouseY;
+                var currentTime = (actualMouseY - 50) / _timelineScale;
                 var laneWidth = (Timeline.CanvasSize.Width - 10) / 4;
                 var currentLane = (byte)Math.Floor(actualMouseX / laneWidth);
 
@@ -340,15 +346,23 @@ public partial class MainWindow
                 };
             }
 
-            var dlg = new NotePropertiesDialog(actualNote)
+            if(Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl) || existingNote.HasValue)
             {
-                Owner = this
-            };
+                var dlg = new NotePropertiesDialog(actualNote)
+                {
+                    Owner = this
+                };
 
-            if (dlg.ShowDialog().GetValueOrDefault())
+                if (dlg.ShowDialog().GetValueOrDefault())
+                {
+                    if (existingNote.HasValue) _chart.Notes.Remove(existingNote.Value);
+                    _chart.Notes.Add(dlg.Note);
+                    Timeline.InvalidateVisual();
+                }
+            } 
+            else
             {
-                if(existingNote.HasValue) _chart.Notes.Remove(existingNote.Value);
-                _chart.Notes.Add(dlg.Note);
+                _chart.Notes.Add(actualNote);
                 Timeline.InvalidateVisual();
             }
         }
