@@ -339,6 +339,18 @@ public partial class MainWindow
                 var laneWidth = (Timeline.CanvasSize.Width - 10) / 4;
                 var currentLane = (byte)Math.Floor(actualMouseX / laneWidth);
 
+                if (float.TryParse(SnappingInput.Text, out var snappingAmount) && snappingAmount > 0)
+                {
+                    snappingAmount *= 1000; // seconds to millis
+                    currentTime = MathF.Round(currentTime / snappingAmount, MidpointRounding.AwayFromZero) * snappingAmount;
+
+                    // prevent multiple notes snapping into the same spot
+                    if (_chart.Notes.Any(n => n.Lane == (LaneType)currentLane && n.Time == currentTime))
+                    {
+                        return;
+                    }
+                }
+
                 actualNote = new NoteData
                 {
                     Time = currentTime,

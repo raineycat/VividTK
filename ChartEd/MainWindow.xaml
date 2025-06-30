@@ -42,7 +42,7 @@
             </Grid.ColumnDefinitions>
             
             <StackPanel Grid.Column="0">
-                <Label>Info:</Label>
+                <Label FontWeight="Bold" HorizontalContentAlignment="Center">Info:</Label>
                 <StackPanel Orientation="Horizontal">
                     <Label>Current position: </Label>
                     <TextBlock x:Name="PositionDisplay" Text="0.000" VerticalAlignment="Center" FontWeight="Bold" />
@@ -53,7 +53,7 @@
                     <TextBlock x:Name="NoteCount" Text="0" VerticalAlignment="Center" FontWeight="Bold" />
                 </StackPanel>
                 
-                <Label>Controls:</Label>
+                <Label FontWeight="Bold" HorizontalContentAlignment="Center">Controls:</Label>
                 <StackPanel Orientation="Horizontal">
                     <Button Click="HandleScrollUpButtonClick" Margin="0,0,10,0">Scroll up</Button>
                     <Button Click="HandleScrollResetButtonClick" Margin="0,0,10,0">Reset</Button>
@@ -75,6 +75,16 @@
                             Minimum="10" Maximum="20" Value="16" />
                     <TextBlock Grid.Column="1" VerticalAlignment="Center">Font size</TextBlock>
                 </Grid>
+
+                <Label FontWeight="Bold" HorizontalContentAlignment="Center">Editor:</Label>
+                <StackPanel Orientation="Horizontal">
+                    <Label>Note snapping:</Label>
+                    <TextBox x:Name="SnappingInput" 
+                             Text="0.1"
+                             Width="80" 
+                             VerticalContentAlignment="Center"
+                             Margin="10,0"/>
+                </StackPanel>
             </StackPanel>
             
             <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" />
