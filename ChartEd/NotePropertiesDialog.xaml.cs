@@ -27,7 +27,10 @@ public partial class NotePropertiesDialog : Window
     {
         NoteTypeBox.ItemsSource = Enum.GetValues<NoteType>().Select(v => v.ToString());
         NoteTypeBox.SelectedValue = _modifiedNote.Type.ToString();
-        TimeInput.Text = (_modifiedNote.Time / 1000).ToString("F3");
+
+        TimeInput.Value = _modifiedNote.Time / 1000f;
+        EndTimeInput.Value = _modifiedNote.EndTime / 1000f;
+        TempoInput.Value = _modifiedNote.BPM;
 
         foreach (var obj in LaneSelector.Children)
         {
@@ -81,23 +84,18 @@ public partial class NotePropertiesDialog : Window
         _adornerLayer.Add(_currentAdorner);
     }
 
-    private void HandleTimeChanged(object sender, TextChangedEventArgs e)
+    private void TimeInput_ValueChanged(object sender, FloatInput.ValueChangedEventArgs e)
     {
-        if (float.TryParse(TimeInput.Text, out var noteTime))
-        {
-            _modifiedNote.Time = noteTime * 1000;
-        }
+        _modifiedNote.Time = e.NewValue * 1000f;
     }
 
-    private void HandleDecTime(object sender, RoutedEventArgs e)
+    private void EndTimeInput_ValueChanged(object sender, FloatInput.ValueChangedEventArgs e)
     {
-        _modifiedNote.Time -= 500f;
-        TimeInput.Text = (_modifiedNote.Time / 1000).ToString("F3");
+        _modifiedNote.EndTime = e.NewValue * 1000f;
     }
 
-    private void HandleIncTIme(object sender, RoutedEventArgs e)
+    private void TempoInput_ValueChanged(object sender, FloatInput.ValueChangedEventArgs e)
     {
-        _modifiedNote.Time += 500f;
-        TimeInput.Text = (_modifiedNote.Time / 1000).ToString("F3");
+        _modifiedNote.BPM = e.NewValue;
     }
 }

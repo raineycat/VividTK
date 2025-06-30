@@ -7,7 +7,8 @@
         xmlns:skia="clr-namespace:SkiaSharp.Views.WPF;assembly=SkiaSharp.Views.WPF"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance local:MainWindow}"
-        Title="Chart Editor" Height="800" Width="600">
+        Title="Chart Editor" Height="800" Width="600"
+        Loaded="HandleWindowLoaded">
     <Window.Resources>
     </Window.Resources>
     
@@ -84,6 +85,10 @@
                              Width="80" 
                              VerticalContentAlignment="Center"
                              Margin="10,0"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Label>Placing note:</Label>
+                    <ComboBox x:Name="PlacingNoteInput" />
                 </StackPanel>
             </StackPanel>
             

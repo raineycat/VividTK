@@ -25,6 +25,12 @@ public partial class MainWindow
         InitializeComponent();
     }
 
+    private void HandleWindowLoaded(object sender, RoutedEventArgs e)
+    {
+        PlacingNoteInput.ItemsSource = Enum.GetValues<NoteType>().Select(t => t.ToString());
+        PlacingNoteInput.SelectedIndex = 0;
+    }
+
     public void NewCommandHandler(object sender, ExecutedRoutedEventArgs ev)
     {
         _chart = new InMemoryChartReader();
@@ -354,8 +360,23 @@ public partial class MainWindow
                 actualNote = new NoteData
                 {
                     Time = currentTime,
-                    Lane = (LaneType)currentLane
+                    Lane = (LaneType)currentLane,
+                    Type = Enum.Parse<NoteType>(PlacingNoteInput.SelectedValue as string ?? "Chip")
                 };
+
+                if(actualNote.Type is NoteType.Bumper or NoteType.BumperMine or NoteType.BumperUnknown8)
+                {
+                    actualNote.Lane = (LaneType)((byte)actualNote.Lane + 4);
+                    if((byte)actualNote.Lane > (byte)LaneType.RightBumper)
+                    {
+                        actualNote.Lane = LaneType.RightBumper;
+                    }
+                }
+
+                if(actualNote.Type is NoteType.Hold)
+                {
+                    actualNote.EndTime = actualNote.Time + 250f;
+                }
             }
 
             if(Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl) || existingNote.HasValue)
