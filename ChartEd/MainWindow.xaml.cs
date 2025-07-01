@@ -393,4 +393,31 @@ public partial class MainWindow
 }
         
     }
+
+    private void CanExecIfChartLoaded(object sender, CanExecuteRoutedEventArgs e)
+    {
+        e.CanExecute = _chart != null;
+    }
+
+    private void ClearNotesCommandHandler(object sender, ExecutedRoutedEventArgs e)
+    {
+        if (_chart == null) return;
+        _chart.Notes.Clear();
+        Timeline.InvalidateVisual();
+    }
+
+    private void GimmickEditorCommandHandler(object sender, ExecutedRoutedEventArgs e)
+    {
+        if (_chart == null) return;
+
+        var dlg = new GimmickEditorDialog(_chart.Gimmick)
+        {
+            Owner = this
+        };
+
+        if(dlg.ShowDialog().GetValueOrDefault())
+        {
+            Timeline.InvalidateVisual();
+        }
+    }
 }

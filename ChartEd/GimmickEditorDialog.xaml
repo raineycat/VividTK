@@ -1,0 +1,35 @@
+﻿<Window x:Class="ChartEd.GimmickEditorDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:ed="clr-namespace:ChartEd"
+        mc:Ignorable="d"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        Title="Gimmick editor" Height="300" Width="450"
+        Loaded="HandleWindowLoaded">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="20" />
+        </Grid.RowDefinitions>
+
+        <Grid>
+            <Label>TODO</Label>
+        </Grid>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
+            <StackPanel.Resources>
+                <Style TargetType="Button">
+                    <Setter Property="FontSize" Value="10" />
+                    <Setter Property="MinWidth" Value="50" />
+                    <Setter Property="Margin" Value="10,0" />
+                </Style>
+            </StackPanel.Resources>
+
+            <Button IsDefault="True" Click="HandleCloseDialog">OK</Button>
+            <Button IsCancel="True">Cancel</Button>
+        </StackPanel>
+    </Grid>
+</Window>
