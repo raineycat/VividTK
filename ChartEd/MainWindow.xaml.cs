@@ -155,77 +155,22 @@ public partial class MainWindow
         }
 
         const float noteHeight = 20.0f;
-
-        var markerPaint = new SKPaint
-        {
-            Color = ShowMarkersBox.IsChecked.GetValueOrDefault() ? SKColors.White : SKColor.Empty,
-            StrokeWidth = 10.0f,
-        };
         
         // start marker
         var startY = 50 - _timelineScroll;
-        canvas.DrawLine(0, startY, (float)Timeline.Width, startY, markerPaint);
-
-        var leftChipPaint = new SKPaint
-        {
-            Color = SKColors.Aqua,
-            Style = SKPaintStyle.StrokeAndFill,
-            StrokeCap = SKStrokeCap.Round
-        };
-
-        var rightChipPaint = new SKPaint
-        {
-            Color = SKColors.LightPink,
-            Style = SKPaintStyle.StrokeAndFill,
-            StrokeCap = SKStrokeCap.Round
-        };
-
-        var errorPaint = new SKPaint
-        {
-            Color = SKColors.Green,
-            Style = SKPaintStyle.StrokeAndFill,
-            StrokeCap = SKStrokeCap.Round
-        };
-
-        var leftBumperPaint = new SKPaint
-        {
-            Color = SKColors.Blue,
-            Style = SKPaintStyle.StrokeAndFill,
-            StrokeCap = SKStrokeCap.Round
-        };
-        
-        var rightBumperPaint = new SKPaint
-        {
-            Color = SKColors.Red,
-            Style = SKPaintStyle.StrokeAndFill,
-            StrokeCap = SKStrokeCap.Round
-        };
-
-        var middleBumperPaint = new SKPaint
-        {
-            Color = SKColors.MediumPurple,
-            Style = SKPaintStyle.StrokeAndFill,
-            StrokeCap = SKStrokeCap.Round
-        };
-
-        var minePaint = new SKPaint
-        {
-            Color = SKColors.DarkGray,
-            Style = SKPaintStyle.StrokeAndFill,
-            StrokeCap = SKStrokeCap.Round
-        };
+        canvas.DrawLine(0, startY, (float)info.Width, startY, EditorPaints.MarkerLinePaint);
         
         var markerFont = new SKFont(SKTypeface.FromFamilyName("Arial"));
         markerFont.Size = (float)MarkerSizeSlider.Value;
 
         SKPaint GetPaintForLane(LaneType lane) => lane switch
         {
-            LaneType.Lane1 or LaneType.Lane2 => leftChipPaint,
-            LaneType.Lane3 or LaneType.Lane4 => rightChipPaint,
-            LaneType.LeftBumper => leftBumperPaint,
-            LaneType.MiddleBumper => middleBumperPaint,
-            LaneType.RightBumper => rightBumperPaint,
-            _ => errorPaint
+            LaneType.Lane1 or LaneType.Lane2 => EditorPaints.LeftChipPaint,
+            LaneType.Lane3 or LaneType.Lane4 => EditorPaints.RightChipPaint,
+            LaneType.LeftBumper => EditorPaints.LeftBumperPaint,
+            LaneType.MiddleBumper => EditorPaints.MiddleBumperPaint,
+            LaneType.RightBumper => EditorPaints.RightBumperPaint,
+            _ => EditorPaints.ErrorPaint
         };
         
         foreach (var note in _chart.Notes)
@@ -245,7 +190,7 @@ public partial class MainWindow
                     break;
                 
                 case NoteType.Mine:
-                    canvas.DrawRect(xPos + 2.5f, yPos - _timelineScroll, laneWidth - 5, noteHeight, minePaint);
+                    canvas.DrawRect(xPos + 2.5f, yPos - _timelineScroll, laneWidth - 5, noteHeight, EditorPaints.MinePaint);
                     break;
                 
                 case NoteType.Bumper:
@@ -253,11 +198,11 @@ public partial class MainWindow
                     break;
 
                 case NoteType.BumperMine:
-                    canvas.DrawRect(xPos + 2.5f, yPos - _timelineScroll, laneWidth * 2 - 5, noteHeight, minePaint);
+                    canvas.DrawRect(xPos + 2.5f, yPos - _timelineScroll, laneWidth * 2 - 5, noteHeight, EditorPaints.MinePaint);
                     break;
 
                 case NoteType.AbsoluteBumper:
-                    canvas.DrawRect(xPos + 2.5f, yPos - _timelineScroll, laneWidth * 2 - 5, noteHeight, errorPaint);
+                    canvas.DrawRect(xPos + 2.5f, yPos - _timelineScroll, laneWidth * 2 - 5, noteHeight, EditorPaints.ErrorPaint);
                     break;
 
                 case NoteType.Hold:
@@ -270,13 +215,13 @@ public partial class MainWindow
                     var text = $"TEMPO TO: {newTempo}bpm";
                     
                     canvas.DrawLine(0, yPos - _timelineScroll - 20, 
-                        (float)Timeline.Width, yPos - _timelineScroll - 20, markerPaint);
-                    canvas.DrawText(text, 10, yPos - _timelineScroll, markerFont, markerPaint);
+                        (float)info.Width, yPos - _timelineScroll - 20, EditorPaints.MarkerLinePaint);
+                    canvas.DrawText(text, 10, yPos - _timelineScroll, markerFont, EditorPaints.MarkerTextPaint);
                     break;
                 
                 default:
                     Debug.WriteLine($"Error note: {note.Type} @ {note.Time}/{note.Lane}");
-                    canvas.DrawRect(xPos + 2.5f, yPos - _timelineScroll, laneWidth - 5, noteHeight, errorPaint);
+                    canvas.DrawRect(xPos + 2.5f, yPos - _timelineScroll, laneWidth - 5, noteHeight, EditorPaints.ErrorPaint);
                     break;
             }
         }
