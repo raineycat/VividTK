@@ -263,7 +263,7 @@ public partial class MainWindow
         _timelineScroll += value;
         if (_timelineScroll < -20) _timelineScroll = -20;
         Timeline?.InvalidateVisual();
-        if (PositionDisplay != null) PositionDisplay.Text = ((_timelineScroll * _timelineScale - 50) / 1000).ToString("F3");
+        if (PositionDisplay != null) PositionDisplay.Text = ((_timelineScroll - 50) / _timelineScale / 1000).ToString("F3");
     }
 
     private void HandleTimelineMouseDown(object sender, MouseButtonEventArgs e)
@@ -403,6 +403,22 @@ public partial class MainWindow
     {
         if (_chart == null) return;
         _chart.Notes.Clear();
+        Timeline.InvalidateVisual();
+    }
+
+    private void ClearNotesEarlierCommandHandler(object sender, ExecutedRoutedEventArgs e)
+    {
+        if (_chart == null) return;
+        var currentPos = (_timelineScroll - 50) / _timelineScale;
+        _chart.Notes.RemoveAll(n => n.Time < currentPos);
+        Timeline.InvalidateVisual();
+    }
+
+    private void ClearNotesLaterCommandHandler(object sender, ExecutedRoutedEventArgs e)
+    {
+        if (_chart == null) return;
+        var currentPos = (_timelineScroll - 50) / _timelineScale;
+        _chart.Notes.RemoveAll(n => n.Time > currentPos);
         Timeline.InvalidateVisual();
     }
 

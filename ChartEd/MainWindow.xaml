@@ -20,6 +20,14 @@
         <CommandBinding Command="ApplicationCommands.Help" Executed="HelpCommandHandler" />
         <CommandBinding Command="ApplicationCommands.Close" Executed="CloseCommandHandler" />
 
+        <CommandBinding Command="ed:ChartCommands.ClearNotesEarlier" 
+                        Executed="ClearNotesEarlierCommandHandler" 
+                        CanExecute="CanExecIfChartLoaded" />
+        
+        <CommandBinding Command="ed:ChartCommands.ClearNotesLater" 
+                        Executed="ClearNotesLaterCommandHandler" 
+                        CanExecute="CanExecIfChartLoaded" />
+        
         <CommandBinding Command="ed:ChartCommands.ClearNotes" 
                         Executed="ClearNotesCommandHandler" 
                         CanExecute="CanExecIfChartLoaded" />
@@ -43,8 +51,12 @@
             </MenuItem>
 
             <MenuItem Header="_Chart">
-                <MenuItem Header="_Clear all notes" Command="ed:ChartCommands.ClearNotes" />
                 <MenuItem Header="_Gimmick editor" Command="ed:ChartCommands.GimmickEditor" />
+                <Separator />
+                
+                <MenuItem Header="_Clear all notes" Command="ed:ChartCommands.ClearNotes" />
+                <MenuItem Header="Clear _earlier notes" Command="ed:ChartCommands.ClearNotesEarlier" />
+                <MenuItem Header="Clear _later notes" Command="ed:ChartCommands.ClearNotesLater" />
             </MenuItem>
         </Menu>
         
